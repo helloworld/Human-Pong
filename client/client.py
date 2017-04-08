@@ -2,10 +2,11 @@
 import cv2
 import argparse
 import numpy as np
-from socketIO_client import SocketIO, LoggingNamespace
+from socketIO_client import SocketIO, LoggingNamespace, ConnectionError
 import time
 parser = argparse.ArgumentParser()
 parser.add_argument("--tune", help="tune hsv values", action='store_true')
+parser.add_argument('--noserve', help="don't publish player data", action='store_true')
 args = parser.parse_args()
 ####################################################################################################
 ## Detection Parameters
@@ -95,11 +96,12 @@ def pick_point(cam, detector, x_filter, y_filter):
 ####################################################################################################
 def main():
     # create connection
-    try:
-        socket = SocketIO('localhost', 3000, wait_for_connection=False)
-    except ConnectionError:
-        print 'Failed to connect to server!'
-        exit()
+    if not args.noserve:
+        try:
+            socket = SocketIO('localhost', 3000, wait_for_connection=False)
+        except ConnectionError:
+            print 'Failed to connect to server!'
+            exit()
     cam = cv2.VideoCapture(1)
     # cam.set(cv2.cv.CV_CAP_PROP_BRIGHTNESS, 0)
     cv2.namedWindow('Player Tracker')
@@ -135,7 +137,8 @@ def main():
         cv2.circle(img_processed, (int(x_filter(x)), int(y_filter(y))), 20, (0,0,255), -1)
         game_position = (axis[0] * (x_filter(None) - x1) + axis[1] * (y_filter(None) - y1)) / (axis[0]**2 + axis[1]**2)
         game_position = min(max(0, game_position), 1)
-        socket.emit('data', 1, game_position)
+        if not args.noserve:
+            socket.emit('data', 1, game_position)
         cv2.imshow('Player Tracker', img_processed)
 
         if cv2.waitKey(1) == 27:
