@@ -16,12 +16,12 @@ args = parser.parse_args()
 ####################################################################################################
 
 ## HSV thresholding
-H_LOW = 32
-S_LOW = 25
+H_LOW = 30
+S_LOW = 64
 V_LOW = 52
-H_HIG = 37
-S_HIG = 248
-V_HIG = 175
+H_HIG = 56
+S_HIG = 189
+V_HIG = 209
 
 ## Blob detection
 BLOB_DETECTOR_PARAMS = cv2.SimpleBlobDetector_Params()
@@ -36,7 +36,7 @@ BLOB_DETECTOR_PARAMS.filterByInertia = False
 BLOB_DETECTOR_PARAMS.minInertiaRatio = 0.01
 
 ## Smoothing
-MOVING_AVERAGE_SAMPLES = 6
+MOVING_AVERAGE_SAMPLES = 7
 
 ####################################################################################################
 ## Image Processing
@@ -44,7 +44,7 @@ MOVING_AVERAGE_SAMPLES = 6
 def process_image(img, detector, tuneing):
     h_low, s_low, v_low, h_hig, s_hig, v_hig = tuneing
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    img_blur = cv2.GaussianBlur(img_hsv, (5, 5), 1)
+    img_blur = cv2.GaussianBlur(img_hsv, (2**(2)+1, 2**(2) + 1), 2)
     img_filtered = cv2.inRange(img_blur, (h_low, s_low, v_low), (h_hig, s_hig, v_hig))
     img_medblur = cv2.medianBlur(img_filtered, 2**(4) + 1)
     img_seg = cv2.bitwise_and(img, img, mask=img_medblur)
