@@ -7,7 +7,10 @@ import time
 parser = argparse.ArgumentParser()
 parser.add_argument("--tune", help="tune hsv values", action='store_true')
 parser.add_argument('--noserve', help="don't publish player data", action='store_true')
+parser.add_argument('-p', '--player', help='specify the player number', type=int, required=True)
+parser.add_argument('--ip', help="the ip of the socket to publish too", default='localhost')
 args = parser.parse_args()
+
 ####################################################################################################
 ## Detection Parameters
 ####################################################################################################
@@ -98,7 +101,7 @@ def main():
     # create connection
     if not args.noserve:
         try:
-            socket = SocketIO('localhost', 3000, wait_for_connection=False)
+            socket = SocketIO(args.ip, 3000, wait_for_connection=False)
         except ConnectionError:
             print 'Failed to connect to server!'
             exit()
@@ -138,7 +141,7 @@ def main():
         game_position = (axis[0] * (x_filter(None) - x1) + axis[1] * (y_filter(None) - y1)) / (axis[0]**2 + axis[1]**2)
         game_position = min(max(0, game_position), 1)
         if not args.noserve:
-            socket.emit('data', 1, game_position)
+            socket.emit('data', args.player, game_position)
         cv2.imshow('Player Tracker', img_processed)
 
         if cv2.waitKey(1) == 27:
