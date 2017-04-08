@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pong!</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="pong.css" media="screen, print" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+   
+    <canvas id="game">
+        <div id="unsupported">
+            Sorry, this example cannot be run because your browser does not support the &lt;canvas&gt; element
+        </div>
+    </canvas>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+    <script src="game.js" type="text/javascript"></script>
+    <script src="pong.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    var pong;
+    var socket = io();
+    socket.on("data", function(player, value) {
+        console.log(player, value);
+        set_percentage_points(player, value);
+    });
+
+    Game.ready(function() {
+        pong = Game.start('game', Pong, {
+            sound: true,
+            stats: false,
+            footprints: true,
+            predictions: false,
+        });
+    });
+
+    function set_percentage_points(player, value) {
+      var paddle = player == 1 ? pong.leftPaddle : pong.rightPaddle;
+      var y_new = (pong.height - 12) * value * 0.9;
+      paddle.setpos(paddle.x, y_new);
+    }
+
+
+    </script>
+</body>
+
+</html>
