@@ -84,6 +84,9 @@ def pick_point(cam, detector, x_filter, y_filter):
     while True:
         tuneing = get_tuneing() if args.tune else (H_LOW, S_LOW, V_LOW, H_HIG, S_HIG, V_HIG)
         ret_val, img = cam.read()
+        if img == None:
+            print 'bruh, check the webcam'
+            exit()
         (img_processed, x, y) = process_image(img, detector, tuneing=tuneing)
         cv2.circle(img_processed, (int(x_filter(x)), int(y_filter(y))), 20, (0,0,255), -1)
         cv2.imshow('Player Tracker', img_processed)
@@ -133,7 +136,8 @@ def main():
     while True:
         ret_val, img = cam.read()
         if img == None:
-            raise Exception('bruh, check the webcam')
+            print 'bruh, check the webcam'
+            exit()
 
         tuneing = get_tuneing() if args.tune else (H_LOW, S_LOW, V_LOW, H_HIG, S_HIG, V_HIG)
         (img_processed, x, y) = process_image(img, detector, tuneing=tuneing)
