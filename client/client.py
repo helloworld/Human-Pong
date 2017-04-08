@@ -7,7 +7,7 @@ import time
 parser = argparse.ArgumentParser()
 parser.add_argument("--tune", help="tune hsv values", action='store_true')
 parser.add_argument('--noserve', help="don't publish player data", action='store_true')
-parser.add_argument('-p', '--player', help='specify the player number', type=int, required=True)
+parser.add_argument('-p', '--player', help='specify the player number', type=int, default=1)
 parser.add_argument('--ip', help="the ip of the socket to publish too", default='localhost')
 args = parser.parse_args()
 
@@ -16,12 +16,12 @@ args = parser.parse_args()
 ####################################################################################################
 
 ## HSV thresholding
-H_LOW = 31
-S_LOW = 124
-V_LOW = 14
-H_HIG = 79
-S_HIG = 255
-V_HIG = 172
+H_LOW = 32
+S_LOW = 25
+V_LOW = 52
+H_HIG = 37
+S_HIG = 248
+V_HIG = 175
 
 ## Blob detection
 BLOB_DETECTOR_PARAMS = cv2.SimpleBlobDetector_Params()
