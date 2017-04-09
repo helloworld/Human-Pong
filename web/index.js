@@ -5,7 +5,7 @@ var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
 app.use('/', express.static('public'));
-
+console.log("Running server on port", port)
 var users = 0;
 
 io.on('connection', function (socket) {
