@@ -69,6 +69,7 @@ Pong = {
       this.rightPaddle = Object.construct(Pong.Paddle, this, true);
       this.ball        = Object.construct(Pong.Ball,   this);
       this.sounds      = Object.construct(Pong.Sounds, this);
+      this.effects      = Object.construct(Pong.Effects, this);
       this.runner.start();
     }.bind(this));
   },
@@ -108,9 +109,11 @@ Pong = {
     this.scores[playerNo] += 1;
     if (this.scores[playerNo] == 3) {
       this.menu.declareWinner(playerNo);
+      this.effects.win();
       this.stop();
     }
     else {
+        this.effects.score();
       this.ball.reset(playerNo);
       this.leftPaddle.setLevel(this.level(0));
       this.rightPaddle.setLevel(this.level(1));
@@ -175,9 +178,45 @@ Pong = {
   showPredictions: function(on) { this.cfg.predictions = on; },
   enableSound:     function(on) { this.cfg.sound = on; },
 
-  //=============================================================================
-  // MENU
-  //=============================================================================
+  Effects: {
+
+    win: function() {
+
+
+
+      for(var i = 0; i < 30; i++) {
+        (function(j){
+            setTimeout(function() {
+                if(j % 2 == 0) {
+                    $("body").css({"background": "green" })
+                } else {
+                    $("body").css({"background": "black" })
+                }
+            }, 100 * j);      
+        })(i)
+        
+      }
+    }, 
+
+     score: function() {
+
+
+
+      for(var i = 0; i < 6; i++) {
+        (function(j){
+            setTimeout(function() {
+                if(j % 2 == 0) {
+                    $("body").css({"background": "blue" })
+                } else {
+                    $("body").css({"background": "black" })
+                }
+            }, 100 * j);      
+        })(i)
+        
+      }
+    }
+
+  }, 
 
   Menu: {
 
