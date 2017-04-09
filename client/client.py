@@ -9,6 +9,7 @@ parser.add_argument("--tune", help="tune hsv values", action='store_true')
 parser.add_argument('--noserve', help="don't publish player data", action='store_true')
 parser.add_argument('-p', '--player', help='specify the player number', type=int, default=1)
 parser.add_argument('--ip', help="the ip of the socket to publish too", default='localhost')
+parser.add_argument('-c', '--camera', help='specify the camera number', type=int, default=1)
 args = parser.parse_args()
 
 ####################################################################################################
@@ -16,12 +17,20 @@ args = parser.parse_args()
 ####################################################################################################
 
 ## HSV thresholding
-H_LOW = 30
-S_LOW = 64
-V_LOW = 52
-H_HIG = 56
-S_HIG = 189
-V_HIG = 209
+if args.player == 1:
+    H_LOW = 30
+    S_LOW = 130
+    V_LOW = 30
+    H_HIG = 41
+    S_HIG = 255
+    V_HIG = 255
+else:
+    H_LOW = 30
+    S_LOW = 150
+    V_LOW = 30
+    H_HIG = 70
+    S_HIG = 255
+    V_HIG = 255
 
 ## Blob detection
 BLOB_DETECTOR_PARAMS = cv2.SimpleBlobDetector_Params()
@@ -46,7 +55,7 @@ def process_image(img, detector, tuneing):
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     img_blur = cv2.GaussianBlur(img_hsv, (2**(2)+1, 2**(2) + 1), 2)
     img_filtered = cv2.inRange(img_blur, (h_low, s_low, v_low), (h_hig, s_hig, v_hig))
-    img_medblur = cv2.medianBlur(img_filtered, 2**(4) + 1)
+    img_medblur = cv2.medianBlur(img_filtered, 2**(5) + 1)
     img_seg = cv2.bitwise_and(img, img, mask=img_medblur)
     keypoints = detector.detect(img_seg)
     (x, y) = (None, None)
@@ -104,11 +113,13 @@ def main():
     # create connection
     if not args.noserve:
         try:
+            print 'Connecting to server...'
             socket = SocketIO(args.ip, 3000, wait_for_connection=False)
+            print 'Connected!'
         except ConnectionError:
             print 'Failed to connect to server!'
             exit()
-    cam = cv2.VideoCapture(1)
+    cam = cv2.VideoCapture(args.camera)
     # cam.set(cv2.cv.CV_CAP_PROP_BRIGHTNESS, 0)
     cv2.namedWindow('Player Tracker')
     detector = cv2.SimpleBlobDetector(BLOB_DETECTOR_PARAMS)
@@ -145,7 +156,9 @@ def main():
         game_position = (axis[0] * (x_filter(None) - x1) + axis[1] * (y_filter(None) - y1)) / (axis[0]**2 + axis[1]**2)
         game_position = min(max(0, game_position), 1)
         if not args.noserve:
+            print 'test'
             socket.emit('data', args.player, game_position)
+        print game_position
         cv2.imshow('Player Tracker', img_processed)
 
         if cv2.waitKey(1) == 27:
