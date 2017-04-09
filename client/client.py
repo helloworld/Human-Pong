@@ -18,17 +18,17 @@ args = parser.parse_args()
 
 ## HSV thresholding
 if args.player == 1:
-    H_LOW = 30
-    S_LOW = 130
-    V_LOW = 30
-    H_HIG = 41
-    S_HIG = 255
-    V_HIG = 255
+    H_LOW = 33
+    S_LOW = 125
+    V_LOW = 33
+    H_HIG = 81
+    S_HIG = 230
+    V_HIG = 230
 else:
-    H_LOW = 30
-    S_LOW = 150
-    V_LOW = 30
-    H_HIG = 70
+    H_LOW = 29
+    S_LOW = 59
+    V_LOW = 86
+    H_HIG = 55
     S_HIG = 255
     V_HIG = 255
 
@@ -45,19 +45,19 @@ BLOB_DETECTOR_PARAMS.filterByInertia = False
 BLOB_DETECTOR_PARAMS.minInertiaRatio = 0.01
 
 ## Smoothing
-MOVING_AVERAGE_SAMPLES = 3
+MOVING_AVERAGE_SAMPLES = 2
 
 ####################################################################################################
 ## Image Processing
 ####################################################################################################
-def process_image(img, detector, tuneing):
+def process_image(img, detector, tuneing, debug=True):
     h_low, s_low, v_low, h_hig, s_hig, v_hig = tuneing
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    img_blur = cv2.GaussianBlur(img_hsv, (2**(2)+1, 2**(2) + 1), 2)
+    # img_blur = cv2.GaussianBlur(img_hsv, (2**(2)+1, 2**(2) + 1), 2)
     img_filtered = cv2.inRange(img_blur, (h_low, s_low, v_low), (h_hig, s_hig, v_hig))
     img_medblur = cv2.medianBlur(img_filtered, 2**(1) + 1)
-    img_seg = cv2.bitwise_and(img, img, mask=img_medblur)
-    keypoints = detector.detect(img_seg)
+    img_seg = cv2.bitwise_and(img, img, mask=img_medblur) if debug else img
+    keypoints = detector.detect(img_medblur)
     (x, y) = (None, None)
     if len(keypoints) > 0:
         (x, y, norm) = reduce(
@@ -151,15 +151,16 @@ def main():
             exit()
 
         tuneing = get_tuneing() if args.tune else (H_LOW, S_LOW, V_LOW, H_HIG, S_HIG, V_HIG)
-        (img_processed, x, y) = process_image(img, detector, tuneing=tuneing)
-        cv2.circle(img_processed, (int(x_filter(x)), int(y_filter(y))), 20, (0,0,255), -1)
-        game_position = (axis[0] * (x_filter(None) - x1) + axis[1] * (y_filter(None) - y1)) / (axis[0]**2 + axis[1]**2)
+        (img_processed, x, y) = process_image(img, detector, tuneing=tuneing, debug=False)
+        x_coord = x_filter(x)
+        y_coord = y_filter(y)
+        cv2.circle(img_processed, (int(x_coord), int(y_coord)), 20, (0,0,255), -1)
+        game_position = (axis[0] * (x_coord - x1) + axis[1] * (y_coord - y1)) / (axis[0]**2 + axis[1]**2)
         game_position = min(max(0, game_position), 1)
         if not args.noserve:
-            print 'test'
             socket.emit('data', args.player, game_position)
-        print game_position
-        cv2.imshow('Player Tracker', img_processed)
+
+        # cv2.imshow('Player Tracker', img_processed)
 
         if cv2.waitKey(1) == 27:
             cv2.destroyAllWindows()
