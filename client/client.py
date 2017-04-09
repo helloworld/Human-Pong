@@ -36,7 +36,7 @@ else:
 BLOB_DETECTOR_PARAMS = cv2.SimpleBlobDetector_Params()
 BLOB_DETECTOR_PARAMS.blobColor = 255
 BLOB_DETECTOR_PARAMS.filterByArea = True
-BLOB_DETECTOR_PARAMS.minArea = 1500
+BLOB_DETECTOR_PARAMS.minArea = 500
 BLOB_DETECTOR_PARAMS.maxArea = 99999999
 BLOB_DETECTOR_PARAMS.filterByCircularity = False
 BLOB_DETECTOR_PARAMS.filterByConvexity = False
@@ -45,7 +45,7 @@ BLOB_DETECTOR_PARAMS.filterByInertia = False
 BLOB_DETECTOR_PARAMS.minInertiaRatio = 0.01
 
 ## Smoothing
-MOVING_AVERAGE_SAMPLES = 7
+MOVING_AVERAGE_SAMPLES = 3
 
 ####################################################################################################
 ## Image Processing

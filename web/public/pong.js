@@ -9,9 +9,9 @@ Pong = {
     height:       480,   // logical canvas height (ditto)
     wallWidth:    12,
     paddleWidth:  12,
-    paddleHeight: 60,
+    paddleHeight: 100,//60,
     paddleSpeed:  2,     // should be able to cross court vertically   in 2 seconds
-    ballSpeed:    4,     // should be able to cross court horizontally in 4 seconds, at starting speed ...
+    ballSpeed:    5,     // should be able to cross court horizontally in 4 seconds, at starting speed ...
     ballAccel:    8,     // ... but accelerate as time passes
     ballRadius:   5,
     sound:        true
@@ -254,8 +254,8 @@ Pong = {
       this.walls.push({x: 0, y: h - ww, width: w, height: ww});
       var nMax = (h / (ww*2));
       for(var n = 0 ; n < nMax ; n++) { // draw dashed halfway line
-        this.walls.push({x: (w / 2) - (ww / 2), 
-                         y: (ww / 2) + (ww * 2 * n), 
+        this.walls.push({x: (w / 2) - (ww / 2),
+                         y: (ww / 2) + (ww * 2 * n),
                          width: ww, height: ww});
       }
 
@@ -598,35 +598,35 @@ Pong = {
     ballIntercept: function(ball, rect, nx, ny) {
       var pt;
       if (nx < 0) {
-        pt = Pong.Helper.intercept(ball.x, ball.y, ball.x + nx, ball.y + ny, 
-                                   rect.right  + ball.radius, 
-                                   rect.top    - ball.radius, 
-                                   rect.right  + ball.radius, 
-                                   rect.bottom + ball.radius, 
+        pt = Pong.Helper.intercept(ball.x, ball.y, ball.x + nx, ball.y + ny,
+                                   rect.right  + ball.radius,
+                                   rect.top    - ball.radius,
+                                   rect.right  + ball.radius,
+                                   rect.bottom + ball.radius,
                                    "right");
       }
       else if (nx > 0) {
-        pt = Pong.Helper.intercept(ball.x, ball.y, ball.x + nx, ball.y + ny, 
-                                   rect.left   - ball.radius, 
-                                   rect.top    - ball.radius, 
-                                   rect.left   - ball.radius, 
+        pt = Pong.Helper.intercept(ball.x, ball.y, ball.x + nx, ball.y + ny,
+                                   rect.left   - ball.radius,
+                                   rect.top    - ball.radius,
+                                   rect.left   - ball.radius,
                                    rect.bottom + ball.radius,
                                    "left");
       }
       if (!pt) {
         if (ny < 0) {
-          pt = Pong.Helper.intercept(ball.x, ball.y, ball.x + nx, ball.y + ny, 
-                                     rect.left   - ball.radius, 
-                                     rect.bottom + ball.radius, 
-                                     rect.right  + ball.radius, 
+          pt = Pong.Helper.intercept(ball.x, ball.y, ball.x + nx, ball.y + ny,
+                                     rect.left   - ball.radius,
+                                     rect.bottom + ball.radius,
+                                     rect.right  + ball.radius,
                                      rect.bottom + ball.radius,
                                      "bottom");
         }
         else if (ny > 0) {
-          pt = Pong.Helper.intercept(ball.x, ball.y, ball.x + nx, ball.y + ny, 
-                                     rect.left   - ball.radius, 
-                                     rect.top    - ball.radius, 
-                                     rect.right  + ball.radius, 
+          pt = Pong.Helper.intercept(ball.x, ball.y, ball.x + nx, ball.y + ny,
+                                     rect.left   - ball.radius,
+                                     rect.top    - ball.radius,
+                                     rect.right  + ball.radius,
                                      rect.top    - ball.radius,
                                      "top");
         }
