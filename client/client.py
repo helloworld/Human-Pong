@@ -55,7 +55,7 @@ def process_image(img, detector, tuneing):
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     img_blur = cv2.GaussianBlur(img_hsv, (2**(2)+1, 2**(2) + 1), 2)
     img_filtered = cv2.inRange(img_blur, (h_low, s_low, v_low), (h_hig, s_hig, v_hig))
-    img_medblur = cv2.medianBlur(img_filtered, 2**(5) + 1)
+    img_medblur = cv2.medianBlur(img_filtered, 2**(1) + 1)
     img_seg = cv2.bitwise_and(img, img, mask=img_medblur)
     keypoints = detector.detect(img_seg)
     (x, y) = (None, None)
