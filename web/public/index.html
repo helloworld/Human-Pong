@@ -8,7 +8,7 @@
 </head>
 
 <body>
-   
+
     <canvas id="game">
         <div id="unsupported">
             Sorry, this example cannot be run because your browser does not support the &lt;canvas&gt; element
@@ -37,7 +37,7 @@
 
     function set_percentage_points(player, value) {
       var paddle = player == 1 ? pong.leftPaddle : pong.rightPaddle;
-      var y_new = (pong.height - 12) * value * 0.9;
+      var y_new = Math.max(0, (pong.height - 12) * value * 0.9 - 40);
       paddle.setpos(paddle.x, y_new);
     }
 

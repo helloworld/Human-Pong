@@ -107,7 +107,7 @@ Pong = {
   goal: function(playerNo) {
     this.sounds.goal();
     this.scores[playerNo] += 1;
-    if (this.scores[playerNo] == 3) {
+    if (this.scores[playerNo] == 5) {
       this.menu.declareWinner(playerNo);
       this.effects.win();
       this.stop();
@@ -192,11 +192,11 @@ Pong = {
                 } else {
                     $("body").css({"background": "black" })
                 }
-            }, 100 * j);      
+            }, 100 * j);
         })(i)
-        
+
       }
-    }, 
+    },
 
      score: function() {
 
@@ -210,13 +210,13 @@ Pong = {
                 } else {
                     $("body").css({"background": "black" })
                 }
-            }, 100 * j);      
+            }, 100 * j);
         })(i)
-        
+
       }
     }
 
-  }, 
+  },
 
   Menu: {
 
